@@ -18,7 +18,9 @@ and the corresponding website http://fmv.jku.at/amulet2
   
 Dependencies: `libgmp` (https://gmplib.org/)
 
-Use `./configure.sh && make` to configure and build `AMulet 2.2`.
+`sudo apt update` and `sudo apt install -y libgmp10 libgmp-dev`.
+
+Use `./configure.sh -g && make` to configure and build `AMulet 2.2`.
 
 
 usage : `amulet <mode> <input.aig> <output files> [<option> ...]`
