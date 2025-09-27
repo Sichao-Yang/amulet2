@@ -6,7 +6,12 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/amulet",
-            "args": ["-substitute", "bpwtcl.aig", "miter.cnf", "rewritten.aig", "-v4"],
+            // "args": ["-substitute", "bpwtcl.aig", "miter.cnf", "rewritten.aig", "-v4"],
+            "args": [
+                "-verify",
+                "rewritten.aig",
+                "-v4"
+            ],
             "stopAtEntry": true,
             "cwd": "${workspaceFolder}/examples/sect3_usage",
             "environment": [],

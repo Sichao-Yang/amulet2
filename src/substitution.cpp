@@ -90,7 +90,7 @@ unsigned get_input(bool flip) {
 
 void push_to_inputs(Gate * n) {
   inputs.push_back(n);
-  n->inc_fsa_inp();
+  n->inc_fsa_inp(); //fsa final stage adder
   n->mark_fsa();
 }
 
@@ -138,12 +138,12 @@ void identify_carry_out() {
 }
 
 /*------------------------------------------------------------------------*/
-
+// pi = xi xor yi, gi = xi & yi, si = pi xor ci, ci = gi-1 | (pi-1 & ci-1)
 bool identify_propagate_and_generate_gates() {
-// slice NN-1 contains carry, slice 0 is no XOR
+// slice NN-1 contains carry, slice 0 has no XOR
   for (int i = NN-2; i > 0; i--) {
     Gate * n = gate(slit(i));
-
+    // for simple multiplier, n->parents_size() == 1
     if (i == 2 && n->parents_size() > 3) {
       assert(gate(slit(0))->parents_size() > 1);
 
@@ -159,14 +159,14 @@ bool identify_propagate_and_generate_gates() {
 
     Gate * internal_xor, *l = 0, *r = 0;
     if (i == 1 && n->parents_size() > 1) { internal_xor = n;
-    } else {
+    } else { 
       l = xor_left_child(n);
       r = xor_right_child(n);
-      internal_xor = l->get_xor_gate() ? l : r;
+      internal_xor = l->get_xor_gate() ? l : r; // pi
     }
 
     int cmp = NN-1;
-    if (internal_xor->parents_size() < 3) break;
+    if (internal_xor->parents_size() < 3) break;  // pi contributes to 1 xor and 1 and at least (xor has 2 ands)
 
     if (internal_xor->parents_size() == 3 && i < 3*cmp/4
         && !cin_in_slice_0()) {
@@ -192,7 +192,7 @@ bool identify_propagate_and_generate_gates() {
       aiger_and * par = is_model_and(internal_and->get_var_num());
       g_0 = gate(par->rhs0);
       g_1 = gate(par->rhs1);
-      g_0->set_neg(aiger_sign(par->rhs0));
+      g_0->set_neg(aiger_sign(par->rhs0));  // set_neg means if its negative, set this to true
       g_1->set_neg(aiger_sign(par->rhs1));
       push_to_inputs(g_0);
       push_to_inputs(g_1);
@@ -205,7 +205,7 @@ bool identify_propagate_and_generate_gates() {
 
     push_to_outputs(n, i);
     if (i != 1 || n->parents_size() == 1) {
-      if (l->get_xor_gate()) push_to_cins(r, i);
+      if (l->get_xor_gate()) push_to_cins(r, i);  //n是si，如果l是xor，那就是pi，ci就是r
       else
         push_to_cins(l, i);
     } else  {
