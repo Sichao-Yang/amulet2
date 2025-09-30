@@ -237,7 +237,7 @@ void remove_internal_xor_gates(FILE * file) {
     if (r_gate->get_xor_gate() != 2) continue;
     assert(l_gate->children_size() == 2);
     assert(r_gate->children_size() == 2);
-    if(l_gate->parents_size() != 1 && r_gate->parents_size() != 1) continue;
+    if(l_gate->parents_size() != 1 && r_gate->parents_size() != 1) continue;  // 有除了xor root以外的外部节点也依赖它
     Gate * ll_gate = l_gate->children_front();
     Gate * lr_gate = l_gate->children_back();
 

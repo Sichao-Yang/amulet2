@@ -271,7 +271,7 @@ void mark_xor_chain_in_last_slice() {
   Gate * out = gates[num_gates-1];
   if(out->children_size() == 0) return;
   assert(out->children_size() == 1);
-  Gate * child = out->children_front();
+  Gate * child = out->children_front();   // the aig output
   if(child->get_input()) return;
 
   std::queue<Gate*> downwards_queue;
@@ -281,7 +281,7 @@ void mark_xor_chain_in_last_slice() {
     Gate * n = downwards_queue.front();
     downwards_queue.pop();
 
-    aiger_and * and1 = is_model_and(n->get_var_num());
+    aiger_and * and1 = is_model_and(n->get_var_num());    // xor = !(a&b) & !(!a&!b)
     unsigned l = and1->rhs0;
     aiger_and * land = is_model_and(l);
     unsigned ll = land->rhs0, lr = land->rhs1;

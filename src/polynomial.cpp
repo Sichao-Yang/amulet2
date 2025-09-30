@@ -143,7 +143,7 @@ void push_mstack(Monomial *m) {
     return;
   }
 
-  if (!m->get_term()) {
+  if (!m->get_term()) { 
     Monomial * tmp = mstack[num_mstack-1];
 
     if (tmp->get_term()) { mstack[num_mstack++] = m;
@@ -170,11 +170,12 @@ void push_mstack(Monomial *m) {
     while (i >= 0) {
       tmp = mstack[i];
       cmp = tmp->get_term()->cmp(m->get_term());
-
-      if (cmp >= 0) break;
+      // mstack是sorted的，1表示tmp的var level比m大，0表示这两个term是一样的，-1表示m的比较大，
+      // 应该是从-1到0再到1的过程（注意，这里用的是term里var的level，说明term本身也是sorted的）
+      if (cmp >= 0) break;    
       i--;
     }
-
+    // 如果有这个monomial了，就直接加coef
     if (cmp == 0) {
       mpz_t coeff;
       mpz_init(coeff);
